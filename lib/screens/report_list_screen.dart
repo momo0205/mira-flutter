@@ -4,6 +4,7 @@ import '../stores/report_store.dart';
 import '../stores/favorite_store.dart';
 import '../widgets/report_card.dart';
 import '../widgets/empty_state.dart';
+import 'report_read_screen.dart';
 
 class ReportListScreen extends StatefulWidget {
   final String serviceId;
@@ -109,9 +110,9 @@ class _ReportListScreenState extends State<ReportListScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => Scaffold(
-                          appBar: AppBar(title: Text(report.title)),
-                          body: const Center(child: Text('报告阅读页面待实现')),
+                        builder: (_) => ReportReadScreen(
+                          serviceId: widget.serviceId,
+                          report: report,
                         ),
                       ),
                     );
