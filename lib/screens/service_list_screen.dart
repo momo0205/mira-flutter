@@ -5,6 +5,7 @@ import '../stores/favorite_store.dart';
 import '../widgets/service_card.dart';
 import '../widgets/empty_state.dart';
 import 'settings_screen.dart';
+import 'report_list_screen.dart';
 
 class ServiceListScreen extends StatefulWidget {
   const ServiceListScreen({super.key});
@@ -73,9 +74,9 @@ class _ServiceListScreenState extends State<ServiceListScreen> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => Scaffold(
-                        appBar: AppBar(title: Text(service.name)),
-                        body: const Center(child: Text('报告列表页面待实现')),
+                      builder: (_) => ReportListScreen(
+                        serviceId: service.id,
+                        serviceName: service.name,
                       ),
                     ),
                   );
