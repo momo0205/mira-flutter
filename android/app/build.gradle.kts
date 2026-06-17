@@ -3,10 +3,6 @@ plugins {
     id("dev.flutter.flutter-gradle-plugin")
 }
 
-val keystorePropertiesFile = rootProject.file("key.properties")
-val keystoreProperties = java.util.Properties()
-keystoreProperties.load(keystorePropertiesFile.inputStream())
-
 android {
     namespace = "com.mira.mira_flutter"
     compileSdk = flutter.compileSdkVersion
@@ -27,10 +23,10 @@ android {
 
     signingConfigs {
         create("release") {
-            storeFile = file(keystoreProperties["storeFile"] as String)
-            storePassword = keystoreProperties["storePassword"] as String
-            keyAlias = keystoreProperties["keyAlias"] as String
-            keyPassword = keystoreProperties["keyPassword"] as String
+            storeFile = file("mira.keystore")
+            storePassword = "mira123"
+            keyAlias = "mira"
+            keyPassword = "mira123"
         }
     }
 
