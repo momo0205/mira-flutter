@@ -1,30 +1,35 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:mira_flutter/config/api_config.dart';
 import 'package:mira_flutter/main.dart';
 
+Widget createTestApp(ApiConfig apiConfig) {
+  return MiraApp(apiConfig: apiConfig);
+}
+
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  testWidgets('shows settings screen when not configured', (WidgetTester tester) async {
+    SharedPreferences.setMockInitialValues({});
+    final apiConfig = ApiConfig();
+    await apiConfig.load();
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    await tester.pumpWidget(createTestApp(apiConfig));
+    await tester.pumpAndSettle();
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+    // Should show SettingsScreen with "服务器设置" title
+    expect(find.text('服务器设置'), findsOneWidget);
+  });
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+  testWidgets('shows service list when configured', (WidgetTester tester) async {
+    SharedPreferences.setMockInitialValues({'server_url': 'https://api.example.com'});
+    final apiConfig = ApiConfig();
+    await apiConfig.load();
+
+    await tester.pumpWidget(createTestApp(apiConfig));
+    await tester.pumpAndSettle();
+
+    // Should show ServiceListScreen with "Mira 投研终端" title
+    expect(find.text('Mira 投研终端'), findsOneWidget);
   });
 }
