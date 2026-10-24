@@ -2,6 +2,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart' as p;
 
 class CacheStore {
+  static const _maxEntries = 200;
   static Database? _db;
 
   Future<Database> get db async {
@@ -49,10 +50,40 @@ class CacheStore {
       },
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
+    await _evictIfNeeded(database);
+  }
+
+  Future<void> _evictIfNeeded(Database database) async {
+    final count = Sqflite.firstIntValue(
+      await database.rawQuery('SELECT COUNT(*) FROM cache'),
+    );
+    if (count != null && count > _maxEntries) {
+      final excess = count - _maxEntries;
+      await database.rawDelete(
+        'DELETE FROM cache WHERE rowid IN (SELECT rowid FROM cache ORDER BY cached_at ASC LIMIT ?)',
+        [excess],
+      );
+    }
   }
 
   Future<void> clear() async {
     final database = await db;
     await database.delete('cache');
+  }
+
+  Future<void> close() async {
+    if (_db != null) {
+      await _db!.close();
+      _db = null;
+    }
+  }
+
+  Future<bool> isCached(String serviceId, String reportId) async {
+    final database = await db;
+    final count = Sqflite.firstIntValue(await database.rawQuery(
+      'SELECT COUNT(*) FROM cache WHERE service_id = ? AND report_id = ?',
+      [serviceId, reportId],
+    ));
+    return (count ?? 0) > 0;
   }
 }

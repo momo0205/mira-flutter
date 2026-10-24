@@ -13,10 +13,10 @@ class Service {
 
   factory Service.fromJson(Map<String, dynamic> json) {
     return Service(
-      id: json['id'] as String,
-      name: json['name'] as String,
+      id: (json['id'] as String?) ?? '',
+      name: (json['name'] as String?) ?? '',
       description: json['description'] as String?,
-      reportCount: (json['report_count'] as int?) ?? 0,
+      reportCount: (json['report_count'] as num?)?.toInt() ?? 0,
     );
   }
 }

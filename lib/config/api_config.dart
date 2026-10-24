@@ -3,14 +3,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiConfig extends ChangeNotifier {
   static const _key = 'server_url';
-  String _serverUrl = '';
+  static const defaultUrl = 'https://mira.ironmao.win';
+  String _serverUrl = defaultUrl;
 
   String get serverUrl => _serverUrl;
   bool get isConfigured => _serverUrl.isNotEmpty;
 
   Future<void> load() async {
     final prefs = await SharedPreferences.getInstance();
-    _serverUrl = prefs.getString(_key) ?? '';
+    _serverUrl = prefs.getString(_key) ?? defaultUrl;
     notifyListeners();
   }
 

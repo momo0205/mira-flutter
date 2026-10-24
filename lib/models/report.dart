@@ -14,12 +14,19 @@ class Report {
   });
 
   factory Report.fromJson(Map<String, dynamic> json) {
+    DateTime parsedDate;
+    try {
+      parsedDate = DateTime.parse(json['date'] as String? ?? '');
+    } catch (_) {
+      parsedDate = DateTime(2000);
+    }
+
     return Report(
-      id: json['id'] as String,
-      title: json['title'] as String,
-      date: DateTime.parse(json['date'] as String),
+      id: (json['id'] as String?) ?? '',
+      title: (json['title'] as String?) ?? '',
+      date: parsedDate,
       tags: (json['tags'] as List<dynamic>?)
-              ?.map((e) => e as String)
+              ?.whereType<String>()
               .toList() ??
           [],
       summary: json['summary'] as String?,

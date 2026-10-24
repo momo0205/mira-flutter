@@ -21,7 +21,8 @@ class ReportCard extends StatelessWidget {
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 3),
       child: ListTile(
-        contentPadding: const EdgeInsets.only(left: 16, right: 8, top: 6, bottom: 6),
+        contentPadding:
+            const EdgeInsets.only(left: 16, right: 8, top: 6, bottom: 6),
         title: Text(
           report.title,
           style: theme.textTheme.titleSmall,
@@ -32,9 +33,11 @@ class ReportCard extends StatelessWidget {
           padding: const EdgeInsets.only(top: 4),
           child: Row(
             children: [
-              Icon(Icons.calendar_today, size: 12, color: theme.colorScheme.outline),
+              Icon(Icons.calendar_today,
+                  size: 12, color: theme.colorScheme.outline),
               const SizedBox(width: 4),
-              Text(_formatDate(report.date), style: theme.textTheme.bodySmall),
+              Text(_formatDate(report.date),
+                  style: theme.textTheme.bodySmall),
               if (report.tags.isNotEmpty) ...[
                 const SizedBox(width: 12),
                 ...report.tags.take(3).map((tag) => Padding(
@@ -46,6 +49,13 @@ class ReportCard extends StatelessWidget {
                         ),
                       ),
                     )),
+                if (report.tags.length > 3)
+                  Text(
+                    ' +${report.tags.length - 3}',
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: theme.colorScheme.outline,
+                    ),
+                  ),
               ],
             ],
           ),

@@ -19,7 +19,7 @@ class ServiceCard extends StatelessWidget {
         subtitle: service.description != null
             ? Text(service.description!, maxLines: 1, overflow: TextOverflow.ellipsis)
             : null,
-        trailing: service.reportCount > 0
+        trailing: service.reportCount != 0
             ? Chip(
                 label: Text('${service.reportCount} 篇报告'),
                 visualDensity: VisualDensity.compact,

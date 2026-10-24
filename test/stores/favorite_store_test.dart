@@ -18,9 +18,12 @@ void main() {
       final store = FavoriteStore();
       await store.load();
       expect(store.isFavorite('report-1'), isFalse);
-      await store.toggle('report-1');
+      await store.toggle('report-1', 'svc-1', 'Test Report');
       expect(store.isFavorite('report-1'), isTrue);
-      await store.toggle('report-1');
+      final entry = store.favorites['report-1'];
+      expect(entry!.serviceId, 'svc-1');
+      expect(entry.title, 'Test Report');
+      await store.toggle('report-1', 'svc-1', 'Test Report');
       expect(store.isFavorite('report-1'), isFalse);
     });
 
@@ -29,7 +32,7 @@ void main() {
       await store.load();
       var notified = false;
       store.addListener(() => notified = true);
-      await store.toggle('r1');
+      await store.toggle('r1', 'svc', 'Title');
       expect(notified, isTrue);
     });
   });

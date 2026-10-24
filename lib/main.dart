@@ -5,6 +5,7 @@ import 'services/api_service.dart';
 import 'stores/service_store.dart';
 import 'stores/report_store.dart';
 import 'stores/favorite_store.dart';
+import 'stores/recent_store.dart';
 import 'stores/cache_store.dart';
 import 'screens/service_list_screen.dart';
 import 'screens/settings_screen.dart';
@@ -12,21 +13,32 @@ import 'screens/settings_screen.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final apiConfig = ApiConfig();
-  await apiConfig.load();
-  runApp(MiraApp(apiConfig: apiConfig));
+  final favoriteStore = FavoriteStore();
+  final recentStore = RecentStore();
+  await Future.wait([apiConfig.load(), favoriteStore.load(), recentStore.load()]);
+  runApp(MiraApp(
+    apiConfig: apiConfig,
+    favoriteStore: favoriteStore,
+    recentStore: recentStore,
+  ));
 }
 
 class MiraApp extends StatelessWidget {
   final ApiConfig apiConfig;
+  final FavoriteStore favoriteStore;
+  final RecentStore recentStore;
 
-  const MiraApp({super.key, required this.apiConfig});
+  const MiraApp({
+    super.key,
+    required this.apiConfig,
+    required this.favoriteStore,
+    required this.recentStore,
+  });
 
   @override
   Widget build(BuildContext context) {
     final apiService = ApiService(apiConfig);
     final cacheStore = CacheStore();
-    final favoriteStore = FavoriteStore();
-    favoriteStore.load();
 
     return MultiProvider(
       providers: [
@@ -35,9 +47,10 @@ class MiraApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => ServiceStore(apiService)),
         ChangeNotifierProvider(create: (_) => ReportStore(apiService, cacheStore)),
         ChangeNotifierProvider.value(value: favoriteStore),
+        ChangeNotifierProvider.value(value: recentStore),
       ],
       child: MaterialApp(
-        title: 'Mira 投研终端',
+        title: 'IRON',
         debugShowCheckedModeBanner: false,
         themeMode: ThemeMode.dark,
         darkTheme: ThemeData(

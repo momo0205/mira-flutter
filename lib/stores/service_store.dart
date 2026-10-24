@@ -15,6 +15,7 @@ class ServiceStore extends ChangeNotifier {
   String? get error => _error;
 
   Future<void> fetchServices() async {
+    if (_loading) return;
     _loading = true;
     _error = null;
     notifyListeners();
